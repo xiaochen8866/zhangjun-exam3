@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# =================================================================
+# Name: zhangjun
+# StudentID: Z23310420
+# Description: Validate student ID and major format. 
+#              Output mock user creation commands for non-existent users.
+# Date: 2026-06-14
+# =================================================================
+
+# Clear the screen as required
+clear
+
+echo "=== Furong College User Management System ==="
+echo "Current Operator: zhangjun"
+echo "--------------------------------------------"
+
+# 1. Loop until a valid Student ID is entered
+while true; do
+    read -r -p "Please enter a valid Student ID: " STU_ID
+    
+    # Validation Rule: Matches "Z" followed by 8 digits, OR exactly 8 digits (e.g., Z23310420 or 23310211)
+    if [[ "$STU_ID" =~ ^[Z]?[0-9]{8}$ ]]; then
+        break
+    else
+        echo "【Error】Invalid format! Student ID must be like Z23310420 or 23310211. Try again."
+    fi
+done
+
+# 2. Loop until a valid English Major Name is entered
+while true; do
+    read -r -p "Please enter Major Name (English letters only): " MAJOR
+    
+    # Validation Rule: English letters only
+    if [[ "$MAJOR" =~ ^[a-zA-Z]+$ ]]; then
+        break
+    else
+        echo "【Error】Invalid format! Major name must contain letters only. Try again."
+    fi
+done
+
+echo "--------------------------------------------"
+
+# 3. Check if user exists, if not, output the mock creation command
+if id "$STU_ID" >/dev/null 2>&1; then
+    echo "Notice: User '$STU_ID' already exists in the system."
+else
+    echo "User '$STU_ID' does not exist."
+    echo "Mock Command to execute: sudo useradd -m -g $MAJOR $STU_ID"
+fi
+
+echo "--------------------------------------------"
+echo "Current Time T3: $(date '+%Y-%m-%d %H:%M:%S')"
+read -r -n 1 -p "Press any key to finish script..."
+echo ""
