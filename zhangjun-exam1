@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# =================================================================
+# Name: zhangjun
+# StudentID: Z23310420
+# Description: Dynamically create plum MP3 files without duplication.
+#              Includes auto-cleanup on normal or interrupted exit.
+# Date: 2026-06-14
+# =================================================================
+
+# 1. Define cleanup mechanism
+cleanup() {
+    echo -e "\n[Recycling] Cleaning up plum MP3 files created in this run..."
+    rm -f plum-*.MP3
+    echo "[Recycling] Done."
+}
+
+# Trap exits and interruptions to trigger cleanup
+trap cleanup EXIT INT TERM
+
+# 2. Verify input arguments
+if [ $# -ne 1 ] || ! [[ "$1" =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: Please provide exactly one positive integer as an argument! (e.g., $0 3)"
+    read -r -n 1 -p "Press any key to exit..."
+    trap - EXIT
+    exit 1
+fi
+
+NUM=$1
+echo "zhangjun will create $NUM files"
+
+# 3. Ensure we are in the repository directory
+cd "$(dirname "$0")" || { echo "Failed to change directory"; exit 1; }
+
+# 4. Create files and prevent duplication
+for ((i=1; i<=NUM; i++)); do
+    FILE_NAME="plum-${i}.MP3"
+    
+    if [ -e "$FILE_NAME" ]; then
+        echo "Notice: $FILE_NAME already exists. Skipping."
+    else
+        touch "$FILE_NAME"
+        echo "Successfully created: $FILE_NAME"
+    fi
+done
+
+# 5. Display results and current time T2
+echo "zhangjun fin"
+echo "--- New Files List ---"
+ls -l plum-*.MP3
+echo "----------------------"
+echo "Current Time T2: $(date '+%Y-%m-%d %H:%M:%S')"
+
+# Wait for key press
+read -r -n 1 -p "Press any key to exit program..."
